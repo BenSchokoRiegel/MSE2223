@@ -60,7 +60,12 @@ class MainActivity : ComponentActivity() {
             MSE2223Theme(darkTheme = false) {
                 // A surface container using the 'background' color from the theme
                 Scaffold(
-                    topBar = { Topbar() }
+                    topBar = { Topbar() },
+                    floatingActionButton = {
+                        FloatingActionButton(onClick = { /* ... */ }) {
+                            /* FAB content */
+                        }
+                    }
 
                 ) {
                     Surface(
