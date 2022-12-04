@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.mse2223
 
 import android.content.ClipData
@@ -35,6 +37,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.font.Typeface
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,13 +55,24 @@ class MainActivity : ComponentActivity() {
         val liste: List<Note> = getList(50)
 
         super.onCreate(savedInstanceState)
+
         setContent {
-            MSE2223Theme {
+            MSE2223Theme(darkTheme = false) {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    Rasterlayout(liste)
-                    //Uebung()
+                Scaffold(
+                    topBar = { Topbar() }
+
+                ) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        Rasterlayout(liste)
+                    }
+
+
                 }
+
             }
         }
     }
@@ -66,24 +80,37 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun Coloums(notes : List<Note>){
+fun Topbar() {
+    TopAppBar(
+        modifier = Modifier.padding(4.dp,4.dp)
+
+        ,
+        backgroundColor = Color.Red,
+        title = { Text(modifier = Modifier.fillMaxWidth(),text = "NotizApp", textAlign = TextAlign.Center) }
+
+    )
+}
+
+@Composable
+fun Coloums(notes: List<Note>) {
 
     //List<List<Notes>>
 
-        LazyRow() {
+    LazyRow() {
 
 
-        }
     }
+}
 
 
 @Composable
-fun Uebung(){
-    Row( modifier = Modifier
-        .border(1.dp, color = Color.Red)
-        .padding(10.dp)
+fun Uebung() {
+    Row(
+        modifier = Modifier
+            .border(1.dp, color = Color.Red)
+            .padding(10.dp)
     ) {
-        Box(){
+        Box() {
             Image(
                 painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = null,
@@ -92,34 +119,22 @@ fun Uebung(){
 
         }
         Column() {
-                Text(text = "Herald Hide The Pain ",fontWeight = FontWeight.Bold)
-                Text(text= "Kotlin is Pain")
-            }
-
-
-
-
-
-
-
+            Text(text = "Herald Hide The Pain ", fontWeight = FontWeight.Bold)
+            Text(text = "Kotlin is Pain")
+        }
     }
-
-
-
 
 }
 
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Rasterlayout(notes : List<Note> ) {
+fun Rasterlayout(notes: List<Note>) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(3), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
 
-    ) {
-        items((notes.filter{note -> note.priority != NotePriority.ARCHIVED})) { note ->
+        ) {
+        items((notes.filter { note -> note.priority != NotePriority.ARCHIVED })) { note ->
 
             var background = Color.Black;
 
@@ -144,9 +159,11 @@ fun Rasterlayout(notes : List<Note> ) {
                         Text(note.title)
                     }
                     Row() {
-                        Text(note.text,
-                        maxLines = 2,
-                                overflow = TextOverflow.Ellipsis)
+                        Text(
+                            note.text,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
 
                     }
                     Row() {
@@ -159,15 +176,17 @@ fun Rasterlayout(notes : List<Note> ) {
                         )
 
                     }
-                    Row(){
-                        //var picture by remember {mutableStateOf}
-                    }
-                    if (note.hasPicture){
-                        Row() {
-                            Image(
-                                painterResource(id = R.drawable.ic_launcher_foreground),
-                                    contentDescription = null
+                    Row(
+                        modifier = Modifier.height(55.dp).fillMaxSize()
+                    ) {
+                    if (note.hasPicture) {
 
+                            Image(
+
+                                painterResource(id = R.drawable.ic_launcher_foreground),
+                                contentDescription = null,
+                                modifier = Modifier.
+                                        fillMaxWidth().fillMaxSize(),
                             )
 
                         }
@@ -179,55 +198,56 @@ fun Rasterlayout(notes : List<Note> ) {
         }
     }
 
+
 }
 
 
-fun String.makeimportant():String {
+fun String.makeimportant(): String {
 
     return "$this!!!"
 
 }
 
 
-fun getList(length: Int):List<Note> {
+fun getList(length: Int): List<Note> {
     val note = Note("Bannanen");
     val note2 = Note("apfel")
     val note3 = Note("Schokolade", "250g")
     val tomate = Note("tomate", "250g")
-    val  erdbere = Note("erg","st", NotePriority.ARCHIVED)
-    val liste: List<Note> = listOf(note, note2, note3,tomate,erdbere)
+    val erdbere = Note("erg", "st", NotePriority.ARCHIVED)
+    val liste: List<Note> = listOf(note, note2, note3, tomate, erdbere)
 
 
     val res: MutableList<Note> = mutableListOf()
-    val list = listOf("Bannanen", "apfel", "Schokolade","tomate","Erbeere", "Kiwi","Birne")
+    val list = listOf("Bannanen", "apfel", "Schokolade", "tomate", "Erbeere", "Kiwi", "Birne")
 
 
 
-    for(i in 1..length){
+    for (i in 1..length) {
 
         val enum = NotePriority.values().get(Random.nextInt(0, 3))
         var weight = ""
 
         if (Random.nextInt(0, 2) == 0) {
             for (j in 0..Random.nextInt(10))
-                if (Random.nextInt(0,3) == 0) {
+                if (Random.nextInt(0, 3) == 0) {
                     weight += "Kotlin is PAIN!!!"
                     continue
                 }
-                if (Random.nextInt(0,2)==0) {
-                    weight += "Why am i so bad at Kolin!!!"
-                    continue
-                }
-                weight += "Either i am too dumb to Kolin or Kotlin is too Dumb for me!!!!!"
-        } else{
-            weight =  Random.nextInt(0, 2000).toString() + "g"
+            if (Random.nextInt(0, 2) == 0) {
+                weight += "Why am i so bad at Kolin!!!"
+                continue
+            }
+            weight += "Either i am too dumb to Kolin or Kotlin is too Dumb for me!!!!!"
+        } else {
+            weight = Random.nextInt(0, 2000).toString() + "g"
         }
 
-        val ele =  list.get(Random.nextInt(0,list.size))
-        if (Random.nextInt(0, 2) == 0){
-            res.add(Note(ele,weight,enum))
+        val ele = list.get(Random.nextInt(0, list.size))
+        if (Random.nextInt(0, 2) == 0) {
+            res.add(Note(ele, weight, enum))
         } else {
-            res.add(Note(ele,weight,enum,hasPicture = true))
+            res.add(Note(ele, weight, enum, hasPicture = true))
         }
 
     }
@@ -238,20 +258,21 @@ fun getList(length: Int):List<Note> {
 }
 
 
-
 @Composable
-fun create_Colum(note : Note, modifier: Modifier = Modifier){
-    if (note.text == ""){
-        Row{
+fun create_Colum(note: Note, modifier: Modifier = Modifier) {
+    if (note.text == "") {
+        Row {
             Text(note.title)
 
         }
     } else {
-        Row(verticalAlignment = Alignment.CenterVertically,
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .padding(2.dp)
                 .background(Color.Yellow, RoundedCornerShape(4.dp))
-                .padding(2.dp))
+                .padding(2.dp)
+        )
         {
             Text(note.title)
             Text(note.text)
@@ -260,10 +281,7 @@ fun create_Colum(note : Note, modifier: Modifier = Modifier){
     }
 
 
-
 }
-
-
 
 
 @Composable
