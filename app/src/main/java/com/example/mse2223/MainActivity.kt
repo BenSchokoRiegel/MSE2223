@@ -14,14 +14,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -50,6 +57,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
                     Rasterlayout(liste)
+                    //Uebung()
                 }
             }
         }
@@ -60,7 +68,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Coloums(notes : List<Note>){
 
-    List<List<Notes>>
+    //List<List<Notes>>
 
         LazyRow() {
 
@@ -68,8 +76,38 @@ fun Coloums(notes : List<Note>){
         }
     }
 
-}
 
+@Composable
+fun Uebung(){
+    Row( modifier = Modifier
+        .border(1.dp, color = Color.Red)
+        .padding(10.dp)
+    ) {
+        Box(){
+            Image(
+                painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                contentScale = ContentScale.FillHeight
+            )
+
+        }
+        Column() {
+                Text(text = "Herald Hide The Pain ",fontWeight = FontWeight.Bold)
+                Text(text= "Kotlin is Pain")
+            }
+
+
+
+
+
+
+
+    }
+
+
+
+
+}
 
 
 
@@ -106,19 +144,34 @@ fun Rasterlayout(notes : List<Note> ) {
                         Text(note.title)
                     }
                     Row() {
-                        Text(note.text)
+                        Text(note.text,
+                        maxLines = 2,
+                                overflow = TextOverflow.Ellipsis)
+
                     }
                     Row() {
 
 
                         Text(
-                            text = note.priority.getStringWithFix(),
+                            text = note.priority.toString().makeimportant(),
                             fontWeight = FontWeight.Bold,
                             overflow = TextOverflow.Ellipsis
                         )
 
                     }
+                    Row(){
+                        //var picture by remember {mutableStateOf}
+                    }
+                    if (note.hasPicture){
+                        Row() {
+                            Image(
+                                painterResource(id = R.drawable.ic_launcher_foreground),
+                                    contentDescription = null
 
+                            )
+
+                        }
+                    }
 
                 }
 
@@ -127,6 +180,14 @@ fun Rasterlayout(notes : List<Note> ) {
     }
 
 }
+
+
+fun String.makeimportant():String {
+
+    return "$this!!!"
+
+}
+
 
 fun getList(length: Int):List<Note> {
     val note = Note("Bannanen");
@@ -141,12 +202,34 @@ fun getList(length: Int):List<Note> {
     val list = listOf("Bannanen", "apfel", "Schokolade","tomate","Erbeere", "Kiwi","Birne")
 
 
+
     for(i in 1..length){
 
         val enum = NotePriority.values().get(Random.nextInt(0, 3))
-        val weight =   Random.nextInt(0, 2000).toString() + "g"
+        var weight = ""
+
+        if (Random.nextInt(0, 2) == 0) {
+            for (j in 0..Random.nextInt(10))
+                if (Random.nextInt(0,3) == 0) {
+                    weight += "Kotlin is PAIN!!!"
+                    continue
+                }
+                if (Random.nextInt(0,2)==0) {
+                    weight += "Why am i so bad at Kolin!!!"
+                    continue
+                }
+                weight += "Either i am too dumb to Kolin or Kotlin is too Dumb for me!!!!!"
+        } else{
+            weight =  Random.nextInt(0, 2000).toString() + "g"
+        }
+
         val ele =  list.get(Random.nextInt(0,list.size))
-        res.add(Note(ele,weight,enum))
+        if (Random.nextInt(0, 2) == 0){
+            res.add(Note(ele,weight,enum))
+        } else {
+            res.add(Note(ele,weight,enum,hasPicture = true))
+        }
+
     }
 
     return res
