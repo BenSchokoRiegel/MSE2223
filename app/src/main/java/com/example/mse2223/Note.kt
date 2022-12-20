@@ -1,4 +1,7 @@
-package com.example.mse2223.ui.theme
+package com.example.mse2223
+
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
 enum class NotePriority {
     IMPORTANT, DEFAULT, ARCHIVED
@@ -26,7 +29,9 @@ class Note constructor(val title: String, val text: String, val priority: NotePr
     constructor(title: String, text: String) : this(title, text, NotePriority.DEFAULT)
 }
 */
-class Note (val title: String, val text: String, val priority: NotePriority, val hasPicture : Boolean) {
+
+@Parcelize
+class Note (val title: String, val text: String, val priority: NotePriority, val hasPicture : Boolean):Parcelable {
 
 
 

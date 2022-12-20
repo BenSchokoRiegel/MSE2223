@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.mse2223.ui.theme.Note
 
 @Composable
 fun Navigation() {
@@ -15,7 +14,7 @@ fun Navigation() {
     var liste by remember {
         mutableStateOf(listOf<Note>())
     }
-    liste = liste + getList(1)
+
 
     val navController = rememberNavController()
 
@@ -41,9 +40,15 @@ fun Navigation() {
             )
         )
         {
-
+            val result = navController.previousBackStackEntry?.savedStateHandle?.get<Note>("newNote")
             // Hier weiß ich nicht wie ich das machen soll -> wird unendlich oft aufgerufen
-            liste = updateList(liste,it.arguments?.getString("title").toString(),it.arguments?.getString("text").toString())
+            //liste = updateList(liste,it.arguments?.getString("title").toString(),it.arguments?.getString("text").toString())
+
+            if (result != null){
+                liste = liste + result
+                navController.previousBackStackEntry?.savedStateHandle?.remove<Note>("newNote")
+            }
+
             NotesOverView(
                 // updatet dann nicht die Liste!!!!
                 //notes = updateList(liste,it.arguments?.getString("title").toString(),it.arguments?.getString("text").toString()),
@@ -57,7 +62,8 @@ fun Navigation() {
     }
 }
 
-fun updateList(notes:List<Note>,title:String,text: String):List<Note>{
+fun updateList(notes:List<Note>, title:String, text: String):List<Note>{
  // könnte hier dirty den Code abfangen das es nichts doppelt gibt aber das wäre auch nicht optimal
     return notes + Note(title,text)
 }
+
