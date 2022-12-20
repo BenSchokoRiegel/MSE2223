@@ -6,7 +6,6 @@ import android.content.ClipData
 import android.graphics.fonts.Font
 import androidx.compose.ui.graphics.Color
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.text.style.StyleSpan
 import android.text.SpannableString
 import android.text.TextDirectionHeuristic
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.mse2223.ui.theme.MSE2223Theme
 import com.example.mse2223.ui.theme.Note
 import com.example.mse2223.ui.theme.NotePriority
@@ -44,91 +44,38 @@ import java.util.Locale.filter
 import kotlin.random.Random
 import kotlin.random.Random.Default.nextInt
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent{
-            Navigation()
-        }
-    }
 
-  /*  override fun onCreate(savedInstanceState: Bundle?) {
+@Composable
+fun NotesOverView(notes: List<Note>, navController: NavController) {
 
-        var liste by mutableStateOf(listOf<Note>())
-
-        liste += getList(10)
-
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            MSE2223Theme(darkTheme = false) {
-                // A surface container using the 'background' color from the theme
-                Scaffold(
-                    topBar = { Topbar() },
-                    bottomBar = { BottomAppBar(backgroundColor = Color.Red) { Text("Click FloatingAction to add Random elements ") } },
-                    floatingActionButton = {
-                        FloatingActionButton(onClick = { liste = liste + getList(5) }
-                        ) {
-                            /* FAB content */
-                        }
-                    }
+    MSE2223Theme(darkTheme = false) {
+        // A surface container using the 'background' color from the theme
+        Scaffold(
+            topBar = { Topbar() },
+            bottomBar = { BottomAppBar(backgroundColor = Color.Red) { Text("Click FloatingAction to add Random elements ") } },
+            floatingActionButton = {
+                //FloatingActionButton(onClick = { navController.navigate(Screen.CreateNote.route) }
+                FloatingActionButton(onClick = { navController.navigate(Screen.CreateNote.route) }
                 ) {
-                       Rasterlayout(liste)
-
+                    /* FAB content */
                 }
             }
-        }
-    }
-   */
-}
+
+        ) {
+
+            Rasterlayout(notes)
 
 
-
-@Composable
-fun Topbar() {
-    TopAppBar(
-        modifier = Modifier.padding(4.dp, 4.dp),
-        backgroundColor = Color.Red,
-        title = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "NotizApp",
-                textAlign = TextAlign.Center
-            )
         }
 
-    )
-}
 
-
-
-
-@Composable
-fun Uebung() {
-    Row(
-        modifier = Modifier
-            .border(1.dp, color = Color.Red)
-            .padding(10.dp)
-    ) {
-        Box() {
-            Image(
-                painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = null,
-                contentScale = ContentScale.FillHeight
-            )
-
-        }
-        Column() {
-            Text(text = "Herald Hide The Pain ", fontWeight = FontWeight.Bold)
-            Text(text = "Kotlin is Pain")
-        }
     }
 
 }
 
 
 @Composable
-fun Rasterlayout(notes: List<Note>) {
+fun AllCards(notes: List<Note>) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(3), verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -218,101 +165,3 @@ fun Rasterlayout(notes: List<Note>) {
 
 
 }
-
-
-fun String.makeimportant(): String {
-
-    return "$this!!!"
-
-}
-
-
-fun getList(length: Int): List<Note> {
-    val note = Note("Bannanen");
-    val note2 = Note("apfel")
-    val note3 = Note("Schokolade", "250g")
-    val tomate = Note("tomate", "250g")
-    val erdbere = Note("erg", "st", NotePriority.ARCHIVED)
-    val liste: List<Note> = listOf(note, note2, note3, tomate, erdbere)
-
-
-    val res: MutableList<Note> = mutableListOf()
-    val list = listOf("Bannanen", "apfel", "Schokolade", "tomate", "Erbeere", "Kiwi", "Birne")
-
-
-
-    for (i in 1..length) {
-
-        val enum = NotePriority.values().get(Random.nextInt(0, 3))
-        var weight = ""
-
-        if (Random.nextInt(0, 3) > 0) {
-            for (j in 0..Random.nextInt(10))
-                if (Random.nextInt(0, 3) == 0) {
-                    weight += "Kotlin is PAIN!!!"
-                    continue
-                }
-            if (Random.nextInt(0, 2) == 0) {
-                weight += "Why am i so bad at Kolin!!!"
-                continue
-            }
-            weight += "Either i am too dumb to Kolin or Kotlin is too Dumb for me!!!!!"
-        } else {
-            weight = Random.nextInt(0, 2000).toString() + "g"
-        }
-
-        val ele = list.get(Random.nextInt(0, list.size))
-        if (Random.nextInt(0, 2) == 0) {
-            res.add(Note(ele, weight, enum))
-        } else {
-            res.add(Note(ele, weight, enum, hasPicture = true))
-        }
-
-    }
-
-    return res
-
-
-}
-
-
-@Composable
-fun create_Colum(note: Note, modifier: Modifier = Modifier) {
-    if (note.text == "") {
-        Row {
-            Text(note.title)
-
-        }
-    } else {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .padding(2.dp)
-                .background(Color.Yellow, RoundedCornerShape(4.dp))
-                .padding(2.dp)
-        )
-        {
-            Text(note.title)
-            Text(note.text)
-        }
-
-    }
-
-
-}
-
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MSE2223Theme {
-        Greeting("Android")
-    }
-}
-
-
